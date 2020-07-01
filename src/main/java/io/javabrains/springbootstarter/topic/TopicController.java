@@ -1,20 +1,36 @@
 package io.javabrains.springbootstarter.topic;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
 
 @RestController
 public class TopicController {
+    @Autowired
+    private TopicService topicService;
+
     @RequestMapping("/topics")
     public List<Topic> getAllTopics(){
-        return Arrays.asList(
-                new Topic("spring", "Spring Framework1", "Spring Framework Description"),
-                new Topic("spring1", "Spring Framework2", "Spring Framework Description1"),
-                new Topic("spring2", "Spring Framework3", "Spring Framework Description2")
-
-        );
+        return topicService.getAllTopics();
+    }
+    //Here we use {any var} and then use anno PathVariable to define that var to map it
+    @RequestMapping("/topics/{id}")
+    public Topic getTopic(@PathVariable String id){
+        return topicService.getTopic(id);
+    }
+    @RequestMapping(method = RequestMethod.POST, value = "/topics")
+    public void addTopic(@RequestBody Topic topic){
+        topicService.addTopic(topic);
+    }
+    @RequestMapping(method = RequestMethod.PUT, value ="/topics/{id}")
+    public void updateTopic(@RequestBody Topic topic ,@PathVariable String id){
+        topicService.deleteTopic(id);
+        topicService.addTopic(topic);
+    }
+    @RequestMapping(method = RequestMethod.DELETE, value ="/topics/{id}")
+    public void deleteTopic(@PathVariable String id){
+        topicService.deleteTopic(id);
     }
 }
